@@ -4,7 +4,8 @@ const clouds = document.querySelector(".clouds");
 const gameover = document.querySelector(".telagameover")
 const reiniciar = document.querySelector(".reiniciar")
 const refreshButton = document.querySelector('.refresh-button');
-const pontuacao = document.querySelector(".pontuacao")
+const pontuacao = document.querySelector("#pontuacao")
+
 const refreshPage = () => {
     location.reload();
 }
@@ -17,35 +18,83 @@ const jump = () => {
     }, 500)
 }
 
-const loop = setInterval(() => {
-    let count = 0;
-    const pipePosition = pipe.offsetLeft;
-    const marioPosition = +window.getComputedStyle(mario).bottom.replace('px', '');
-    const cloudPosition = clouds.offsetLeft
-    if (pipePosition <= 120 && pipePosition > 0 && marioPosition < 80) {
-        pipe.style.animation = 'none';
-        pipe.style.left = `${pipePosition}px`;
+var count = 0
 
-        mario.style.animation = 'none';
-        mario.style.bottom = `${marioPosition}px`;
+function changeContador() {
+    count += 1
+    setValue(count)
+}
 
-        mario.src = './images/game-over.png';
-        mario.style.width = '75px';
-        mario.style.marginLeft = '50px';
+function setValue(value) {
+    document.querySelector('#pontuacao').innerHTML = value
+}
 
-        gameover.style.display = 'inline-block';
-        refreshButton.style.display = 'inline-block';
-        pontuacao.style.display = 'inline-block'
-        clouds.style.animation = 'none';
-        clouds.style.left = `${cloudPosition}px`;
+// const loop = setInterval(() => {
+//     const pipePosition = pipe.offsetLeft;
+//     const marioPosition = +window.getComputedStyle(mario).bottom.replace('px', '');
+//     const cloudPosition = clouds.offsetLeft
+//     if (pipePosition <= 120 && pipePosition > 0 && marioPosition < 80) {
+//         pipe.style.animation = 'none';
+//         pipe.style.left = `${pipePosition}px`;
 
-        function contador() {
-            count++;
+//         mario.style.animation = 'none';
+//         mario.style.bottom = `${marioPosition}px`;
+
+//         mario.src = './images/game-over.png';
+//         mario.style.width = '75px';
+//         mario.style.marginLeft = '50px';
+
+//         gameover.style.display = 'inline-block';
+//         refreshButton.style.display = 'inline-block';
+//         pontuacao.style.display = 'inline-block'
+//         clouds.style.animation = 'none';
+//         clouds.style.left = `${cloudPosition}px`;
+//         return clearInterval(loop);
+//     }
+//     console.log(pipePosition)
+//     pipePosition <= 120 && clearInterval(loop)
+// }, 10);
+
+let loop
+
+function restart() {
+    console.log(1)
+    loop = makeInterval()
+}
+
+const makeInterval = () => {
+    return setInterval(() => {
+        const pipePosition = pipe.offsetLeft;
+        const marioPosition = +window.getComputedStyle(mario).bottom.replace('px', '');
+        const cloudPosition = clouds.offsetLeft
+        if (pipePosition <= 120 && pipePosition > 0 && marioPosition < 80) {
+            pipe.style.animation = 'none';
+            pipe.style.left = `${pipePosition}px`;
+
+            mario.style.animation = 'none';
+            mario.style.bottom = `${marioPosition}px`;
+
+            mario.src = './images/game-over.png';
+            mario.style.width = '75px';
+            mario.style.marginLeft = '50px';
+
+            gameover.style.display = 'inline-block';
+            refreshButton.style.display = 'inline-block';
+            pontuacao.style.display = 'inline-block'
+            clouds.style.animation = 'none';
+            clouds.style.left = `${cloudPosition}px`;
+            return clearInterval(loop);
         }
-        clearInterval(loop);
-    }
-    return console.log(contador())
-}, 10);
+        if (pipePosition <= 120) {
+            clearInterval(loop);
+            changeContador();
+            restart();
+        }
+    }, 10);
+}
+
+restart()
 
 document.addEventListener('keydown', jump);
 refreshButton.addEventListener('click', refreshPage)
+setValue(0)
